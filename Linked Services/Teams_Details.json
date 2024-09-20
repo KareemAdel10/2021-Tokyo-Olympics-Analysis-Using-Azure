@@ -1,0 +1,42 @@
+{
+    "name": "Teams_Details",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "datalakedemo2112",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "DelimitedText",
+        "typeProperties": {
+            "location": {
+                "type": "AzureBlobFSLocation",
+                "fileName": "Teams_Details.csv",
+                "folderPath": "Raw Data",
+                "fileSystem": "demo"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+        },
+        "schema": [
+            {
+                "name": "Name",
+                "type": "String"
+            },
+            {
+                "name": "Discipline",
+                "type": "String"
+            },
+            {
+                "name": "NOC",
+                "type": "String"
+            },
+            {
+                "name": "Event",
+                "type": "String"
+            }
+        ]
+    },
+    "type": "Microsoft.Synapse/workspaces/datasets"
+}
