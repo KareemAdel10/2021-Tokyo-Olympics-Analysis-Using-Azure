@@ -23,7 +23,7 @@
   - A Dashboard is created by PowerBI
 
 ## Steps 
-1. **Data Ingestion:**
+### 1. **Data Ingestion:**
    - In this step, The data is downloaded, unzipped, converted from XLSM to CSV format, and securely stored in Azure Data Lake Storage (ADLS).
    - This is how the XLSM files is downloaded and unzipped into the cluster workspace
     ```
