@@ -25,15 +25,54 @@
 ## Steps 
 1. **Data Ingestion:**
    - In this step, The data is downloaded, unzipped, converted from XLSM to CSV format, and securely stored in Azure Data Lake Storage (ADLS).
-   - this is how the XLSM files is downloaded and unzipped into the cluster workspace
+   - This is how the XLSM files is downloaded and unzipped into the cluster workspace
     ```
     import os
+    
     %pip install kaggle
-    
-    
+  
     os.environ['KAGGLE_CONFIG_DIR'] = '<directory>/kaggle.json' #enter your directory
     
     !kaggle datasets download -d arjunprasadsarkhel/2021-olympics-in-tokyo
     
     !unzip 2021-olympics-in-tokyo.zip -d /tmp/2021-olympics-in-tokyo
+    ```
+  - This is how the unzipped files are converted from XLSM to CSV format using pandas
+    ```
+    import pandas as pd
+    import os
+    
+    
+    
+    input_path = "/tmp/2021-olympics-in-tokyo"
+    
+    xlsm_files = [f for f in os.listdir(input_path)]
+    
+    output_path = "/tmp/2021-olympics-in-tokyo-csv"
+    os.makedirs(output_path, exist_ok=True)
+    
+    for file_name in xlsm_files:
+        xlsm_file_path = os.path.join(input_path, file_name)
+        
+        df = pd.read_excel(xlsm_file_path, sheet_name=None)  
+    
+        for sheet_name, data in df.items():
+            csv_file_name = f"{os.path.splitext(file_name)[0]}_{sheet_name}.csv"
+            csv_file_path = os.path.join(output_path, csv_file_name)
+            
+            data.to_csv(csv_file_path, index=False)
+    ```
+  - This is how the files are copied into an ADLS 
+    ```
+    #first create a secret scope (Input Your Own Variables)
+    spark.conf.set(
+      "fs.azure.account.key.<ADLS name>.dfs.core.windows.net",
+      "<Secret key>"
+    )
+    #copy the data
+    # Set up the ADLS path and container details
+    adls_path = "abfss://<container name>@<ADLS name>.dfs.core.windows.net/<directory>"
+    
+    # Copy the file from DBFS to ADLS
+    dbutils.fs.cp("file:/tmp/2021-olympics-in-tokyo-csv", adls_path, recurse=True)
     ```
