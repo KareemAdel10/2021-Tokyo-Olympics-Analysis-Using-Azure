@@ -24,7 +24,8 @@
 
 ## Steps 
 ### 1. **Create An ADLS :**
-   - In this step, an Azure Data Lake Storage Gen2 is created to store both  raw data and transformed data. 
+   - In this step, an Azure Data Lake Storage Gen2 is created to store both  raw data and transformed data.
+     
 ### 2. **Data Ingestion:**
    - In this step, The data is downloaded, unzipped, converted from XLSM to CSV format, and securely stored in Azure Data Lake Storage (ADLS).
    - This is how the XLSM files is downloaded and unzipped into the cluster workspace
@@ -78,15 +79,19 @@
     # Copy the file from DBFS to ADLS
     dbutils.fs.cp("file:/tmp/2021-olympics-in-tokyo-csv", adls_path, recurse=True)
     ```
+    
 ### 3. **Data Transformation:**
   - In this step, a data flow is created in Azure Synapse that performs multiple transformations including Joins, Type casts, Select, Derived Columns, and file renaming.
     ![image](https://github.com/user-attachments/assets/338145d8-fc9a-4769-9733-9099f5b398db)
+    
 ### **4. Load Transformed Data:**
   - In this step, a data pipeline is created including the data flow previously created to load the transformed data into the ADLS account
     ![image](https://github.com/user-attachments/assets/d9accf6e-d4c5-4eab-824b-cf2bac6bf66b)
+    
 ### **5. create a Serverless SQL pool:**
   - In this step, Serverless SQL pool is created by creating five tables each one is pointing to one of the transformed csv files
     ![image](https://github.com/user-attachments/assets/0ea041d9-75a4-4703-a00b-b1a92b4cf778)
+    
 ### 6. **Creating a SQL Script over the SQL Pool:**
   - In this step, generate some insights by creating a SQL Script over the SQL Pool.
     ```
@@ -170,9 +175,11 @@ I would like to thank the following:
 - arjunprasadsarkhel on Kaggle for providing the "2021 Olympics in Tokyo" dataset.
 - Azure for offering powerful tools and services that enabled the seamless data engineering and analytics processes.
 
-
 ## Contact
 For any questions, feedback, or further information, feel free to reach out:
 - **Email:** kareema9001@gmail.com
 - **LinkedIn:** [[LinkedIn Profile](https://www.linkedin.com/in/kareemadel)](https://www.linkedin.com/in/kareem-adel-b76ab9201/)
 
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
