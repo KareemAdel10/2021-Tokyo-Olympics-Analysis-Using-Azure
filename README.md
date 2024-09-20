@@ -19,3 +19,21 @@
   - Transformed data is loaded into a Synapse SQL Pool
 - **Data Exploration:**
   - Azure Storage Explorer is used to interact with Azure Blob Storage and ADLS Gen2.
+- **Data Visualization:**
+  - A Dashboard is created by PowerBI
+
+## Steps 
+1. **Data Ingestion:**
+   - In this step, The data is downloaded, unzipped, converted from XLSM to CSV format, and securely stored in Azure Data Lake Storage (ADLS).
+   - this is how the XLSM files is downloaded and unzipped into the cluster workspace
+    ```
+    import os
+    %pip install kaggle
+    
+    
+    os.environ['KAGGLE_CONFIG_DIR'] = '<directory>/kaggle.json' #enter your directory
+    
+    !kaggle datasets download -d arjunprasadsarkhel/2021-olympics-in-tokyo
+    
+    !unzip 2021-olympics-in-tokyo.zip -d /tmp/2021-olympics-in-tokyo
+    ```
