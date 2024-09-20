@@ -6,16 +6,16 @@
 ## Atchitecture
 ![image](https://github.com/user-attachments/assets/391996c2-e8b3-4c8e-96a0-d7d147db42c4)
 
-- Data Source:
+- **Data Source:**
   - XLSM Files from Kaggle
-- Data Storage:
+- **Data Storage:**
   - Azure Data Lake Storage Gen2 that stores both raw and transformed data
-- Data Processing
+- **Data Processing**:
   - Databricks:
-    - Databricks is Used to convert the files into csv format
+    - Databricks is Used to convert the files into CSV format
   - Azure Data Factory:
     - ADF is used to apply some transformations to the data
-- Data Warehouse
+- **Data Warehouse:**
   - Transformed data is loaded into a Synapse SQL Pool
-- Data Exploration:
-  - Azure Storage Explorer to interact with Azure Blob Storage and ADLS Gen2.
+- **Data Exploration:**
+  - Azure Storage Explorer is used to interact with Azure Blob Storage and ADLS Gen2.
