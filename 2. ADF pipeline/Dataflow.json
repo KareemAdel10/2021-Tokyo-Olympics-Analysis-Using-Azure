@@ -1,0 +1,224 @@
+{
+    "name": "ETL",
+    "properties": {
+        "type": "MappingDataFlow",
+        "typeProperties": {
+            "sources": [
+                {
+                    "dataset": {
+                        "referenceName": "Athletes_Details",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source1"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Coaches_Details",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source2"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "EntriesGender_Details",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source3"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Medals_Details",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source4"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "Teams_Details",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source5"
+                }
+            ],
+            "sinks": [
+                {
+                    "dataset": {
+                        "referenceName": "TransformedData",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink1"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "TransformedData",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink2"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "TransformedData",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink3"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "TransformedData",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink4"
+                },
+                {
+                    "dataset": {
+                        "referenceName": "TransformedData",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink5"
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "cast1"
+                },
+                {
+                    "name": "cast2"
+                },
+                {
+                    "name": "join1"
+                },
+                {
+                    "name": "select1"
+                },
+                {
+                    "name": "HandleNULLs"
+                }
+            ],
+            "scriptLines": [
+                "source(output(",
+                "          Name as string,",
+                "          NOC as string,",
+                "          Discipline as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false) ~> source1",
+                "source(output(",
+                "          Name as string,",
+                "          NOC as string,",
+                "          Discipline as string,",
+                "          Event as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false) ~> source2",
+                "source(output(",
+                "          Discipline as string,",
+                "          Female as string,",
+                "          Male as string,",
+                "          Total as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false) ~> source3",
+                "source(output(",
+                "          Rank as string,",
+                "          {Team/NOC} as string,",
+                "          Gold as string,",
+                "          Silver as string,",
+                "          Bronze as string,",
+                "          Total as string,",
+                "          {Rank by Total} as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false) ~> source4",
+                "source(output(",
+                "          Name as string,",
+                "          Discipline as string,",
+                "          NOC as string,",
+                "          Event as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false) ~> source5",
+                "source3 cast(output(",
+                "          Discipline as string,",
+                "          Female as integer,",
+                "          Male as integer",
+                "     ),",
+                "     errors: true) ~> cast1",
+                "source4 cast(output(",
+                "          Rank as integer,",
+                "          {Team/NOC} as string,",
+                "          Gold as integer,",
+                "          Silver as integer,",
+                "          Bronze as integer,",
+                "          Total as integer,",
+                "          {Rank by Total} as integer",
+                "     ),",
+                "     errors: true) ~> cast2",
+                "source1, source2 join(source1@NOC == source2@NOC",
+                "     && source1@Discipline == source2@Discipline,",
+                "     joinType:'inner',",
+                "     matchType:'exact',",
+                "     ignoreSpaces: false,",
+                "     broadcast: 'auto')~> join1",
+                "join1 select(mapColumn(",
+                "          Name = source1@Name,",
+                "          NOC = source1@NOC,",
+                "          Discipline = source1@Discipline,",
+                "          {Coach Name} = source2@Name",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> select1",
+                "source2 derive(Event = iif(isNull(Event),\"Unknown\",Event)) ~> HandleNULLs",
+                "select1 sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     partitionFileNames:['Athletes.csv'],",
+                "     umask: 0022,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('hash', 1)) ~> sink1",
+                "HandleNULLs sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     partitionFileNames:['Coaches.csv'],",
+                "     umask: 0022,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('hash', 1)) ~> sink2",
+                "cast1 sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     partitionFileNames:['EntriesGender.csv'],",
+                "     umask: 0022,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('hash', 1)) ~> sink3",
+                "cast2 sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     partitionFileNames:['Medals.csv'],",
+                "     umask: 0022,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('hash', 1)) ~> sink4",
+                "source5 sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     partitionFileNames:['Teams.csv'],",
+                "     umask: 0022,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('hash', 1)) ~> sink5"
+            ]
+        }
+    }
+}
