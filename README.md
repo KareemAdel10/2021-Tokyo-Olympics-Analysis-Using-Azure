@@ -178,7 +178,7 @@ I would like to thank the following:
 ## Contact
 For any questions, feedback, or further information, feel free to reach out:
 - **Email:** kareema9001@gmail.com
-- **LinkedIn:** [[LinkedIn Profile](https://www.linkedin.com/in/kareemadel)](https://www.linkedin.com/in/kareem-adel-b76ab9201/)
+- **LinkedIn:** https://www.linkedin.com/in/kareem-adel-b76ab9201/
 
 ## License
 
